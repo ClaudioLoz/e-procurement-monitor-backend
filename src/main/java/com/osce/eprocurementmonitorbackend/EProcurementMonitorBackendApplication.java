@@ -20,7 +20,7 @@ public class EProcurementMonitorBackendApplication implements CommandLineRunner 
     @Override
     public void run(String... arg) throws Exception {
 //        fileStorageService.deleteAll();
-        fileStorageService.init();
+//        fileStorageService.init();
     }
 
 }

@@ -40,7 +40,7 @@ public class EProcurementServiceImpl implements EProcurementService {
             fileInfo.setName(file.getOriginalFilename());
             fileInfo.setEprocurement(savedEProcurement);
             fileInfoRepository.save(fileInfo);
-            //TODO: save in blockchain file's hash
+            //TODO: save  file's hash in blockchain
         });
         return savedEProcurement;
     }
@@ -83,7 +83,7 @@ public class EProcurementServiceImpl implements EProcurementService {
         return eProcurementDetailOutDTO;
     }
 
-    private List<FileInfoOutDTO> findAllFiles(){
+    public List<FileInfoOutDTO> findAllFiles(){
         return fileStorageService.loadAll().map(path -> {
                 FileInfoOutDTO fileInfoOutDTO = new FileInfoOutDTO();
                 String filename = path.getFileName().toString();

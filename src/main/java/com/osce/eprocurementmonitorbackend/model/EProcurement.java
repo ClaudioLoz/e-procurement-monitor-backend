@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
-
 public class EProcurement extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

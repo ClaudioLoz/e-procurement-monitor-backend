@@ -19,6 +19,6 @@ public class Comment extends Auditable {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "e_procurement_id", nullable = false)
-    private EProcurement eProcurement;
+    private EProcurement eprocurement;
 
 }
