@@ -4,13 +4,16 @@ import com.osce.eprocurementmonitorbackend.api.controller.v1.EProcurementControl
 import com.osce.eprocurementmonitorbackend.api.dto.EProcurementDetailOutDTO;
 import com.osce.eprocurementmonitorbackend.api.dto.EProcurementOutDTO;
 import com.osce.eprocurementmonitorbackend.api.dto.FileInfoOutDTO;
+import com.osce.eprocurementmonitorbackend.model.AuthUser;
 import com.osce.eprocurementmonitorbackend.model.EProcurement;
 import com.osce.eprocurementmonitorbackend.model.FileInfo;
+import com.osce.eprocurementmonitorbackend.security.services.UserDetailsImpl;
 import com.osce.eprocurementmonitorbackend.repository.EProcurementRepository;
 import com.osce.eprocurementmonitorbackend.repository.FileInfoRepository;
 import com.osce.eprocurementmonitorbackend.service.EProcurementService;
 import com.osce.eprocurementmonitorbackend.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
@@ -33,6 +36,11 @@ public class EProcurementServiceImpl implements EProcurementService {
     private FileStorageService fileStorageService;
     @Override
     public EProcurement createEProcurement(EProcurement eProcurement, MultipartFile[] files) {
+        UserDetailsImpl userDetails =
+                (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AuthUser authUser = new AuthUser();
+        authUser.setId(userDetails.getId());
+        eProcurement.setUser(authUser);
         EProcurement savedEProcurement = eProcurementRepository.save(eProcurement);
         Arrays.asList(files).stream().forEach(file -> {
             fileStorageService.save(file);

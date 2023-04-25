@@ -4,6 +4,8 @@ import com.osce.eprocurementmonitorbackend.enums.ProcurementObject;
 import com.osce.eprocurementmonitorbackend.enums.ProcurementStatus;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,10 +13,16 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
+@SQLDelete(sql = "UPDATE eprocurement SET active = false WHERE id=?")
+@Where(clause = "active=true")
 public class EProcurement extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private AuthUser user;
     @Enumerated
     @Column(nullable = false)
     private ProcurementStatus procurementStatus = ProcurementStatus.FOLLOW_UP;
@@ -33,7 +41,6 @@ public class EProcurement extends Auditable {
     private Double amount;
     @Column(nullable = false)
     private String department;
-    @Column(nullable = false)
     private String province;
     private String district;
     @Column(nullable = false)

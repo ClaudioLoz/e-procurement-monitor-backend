@@ -35,4 +35,7 @@ public class Auditable {
     @Column(name = "last_modified_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModifiedDate;
+
+    private boolean active = Boolean.TRUE;
+
 }
