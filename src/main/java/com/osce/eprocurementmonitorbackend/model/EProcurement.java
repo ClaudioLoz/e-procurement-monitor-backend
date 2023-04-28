@@ -20,7 +20,7 @@ public class EProcurement extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private AuthUser user;
     @Enumerated
@@ -47,6 +47,8 @@ public class EProcurement extends Auditable {
     private LocalDate contractStartDate;
     @Column(nullable = false)
     private LocalDate contractEndDate;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
 }
