@@ -15,4 +15,5 @@ public class CommentDTO {
     private byte[] image;
     private Date createdDate;
     private Long id;
+    private String authUserName;
 }

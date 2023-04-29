@@ -27,6 +27,7 @@ public class Comment extends Auditable {
 
     @Lob
     private byte[] image;
+    @Column(columnDefinition = "TEXT")
     private String text;
 
 }

@@ -19,4 +19,5 @@ public class EProcurementOutDTO {
     private LocalDate contractStartDate;
     private LocalDate contractEndDate;
     private String department;
+    private String username;
 }

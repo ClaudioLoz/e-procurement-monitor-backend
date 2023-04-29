@@ -7,6 +7,7 @@ import com.osce.eprocurementmonitorbackend.api.dto.FileInfoOutDTO;
 import com.osce.eprocurementmonitorbackend.model.AuthUser;
 import com.osce.eprocurementmonitorbackend.model.EProcurement;
 import com.osce.eprocurementmonitorbackend.model.FileInfo;
+import com.osce.eprocurementmonitorbackend.repository.AuthUserRepository;
 import com.osce.eprocurementmonitorbackend.security.services.UserDetailsImpl;
 import com.osce.eprocurementmonitorbackend.repository.EProcurementRepository;
 import com.osce.eprocurementmonitorbackend.repository.FileInfoRepository;
@@ -26,14 +27,21 @@ import java.util.stream.Collectors;
 @Service
 public class EProcurementServiceImpl implements EProcurementService {
 
-    @Autowired
-    private EProcurementRepository eProcurementRepository;
+
+    private final EProcurementRepository eProcurementRepository;
 
     @Autowired
     private FileInfoRepository fileInfoRepository;
 
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    private AuthUserRepository authUserRepository;
+    public EProcurementServiceImpl(EProcurementRepository eProcurementRepository) {
+        this.eProcurementRepository = eProcurementRepository;
+    }
+
     @Override
     public EProcurement createEProcurement(EProcurement eProcurement, MultipartFile[] files) {
         UserDetailsImpl userDetails =
@@ -48,7 +56,7 @@ public class EProcurementServiceImpl implements EProcurementService {
             fileInfo.setName(file.getOriginalFilename());
             fileInfo.setEprocurement(savedEProcurement);
             fileInfoRepository.save(fileInfo);
-            //TODO: save  file's hash in blockchain
+            //TODO: R2.2: save  file's hash in blockchain
         });
         return savedEProcurement;
     }
@@ -67,6 +75,8 @@ public class EProcurementServiceImpl implements EProcurementService {
             eProcurementOutDTO.setContractStartDate(eProcurement.getContractStartDate());
             eProcurementOutDTO.setContractEndDate(eProcurement.getContractEndDate());
             eProcurementOutDTO.setDepartment(eProcurement.getDepartment());
+            AuthUser authUser = authUserRepository.findById(eProcurement.getUser().getId()).orElseThrow();
+            eProcurementOutDTO.setUsername(authUser.getNin());
             return eProcurementOutDTO;
         }).collect(Collectors.toList());
     }
