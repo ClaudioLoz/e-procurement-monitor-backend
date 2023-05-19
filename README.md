@@ -1,4 +1,6 @@
-# MDSR-vehicle-repairs-Backend
+# e-procurement-monitor-Backend
+
+This backend interacts with Blockchain.
 
 Minimal [Spring Boot](http://projects.spring.io/spring-boot/) sample app.
 
