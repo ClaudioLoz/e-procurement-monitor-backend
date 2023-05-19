@@ -1,5 +1,6 @@
 package com.osce.eprocurementmonitorbackend.api.controller.v1;
 
+import com.osce.eprocurementmonitorbackend.api.dto.EProcurementDTO;
 import com.osce.eprocurementmonitorbackend.api.dto.EProcurementDetailOutDTO;
 import com.osce.eprocurementmonitorbackend.api.dto.EProcurementOutDTO;
 import com.osce.eprocurementmonitorbackend.model.EProcurement;
@@ -32,7 +33,7 @@ public class EProcurementController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<EProcurement> createEProcurement(@RequestPart("json") EProcurement eProcurement
+    public ResponseEntity<EProcurementDTO> createEProcurement(@RequestPart("json") EProcurement eProcurement
             , @RequestPart("files") MultipartFile[] files) {
         return new ResponseEntity<>(eProcurementService.createEProcurement(eProcurement, files), HttpStatus.CREATED);
     }
