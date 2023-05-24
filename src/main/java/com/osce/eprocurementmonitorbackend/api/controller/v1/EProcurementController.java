@@ -37,15 +37,20 @@ public class EProcurementController {
             , @RequestPart("files") MultipartFile[] files) {
         return new ResponseEntity<>(eProcurementService.createEProcurement(eProcurement, files), HttpStatus.CREATED);
     }
-
     @GetMapping
     public ResponseEntity<List<EProcurementOutDTO>> findAllEProcurements() {
         return new ResponseEntity<>(eProcurementService.findAllEProcurements(), HttpStatus.OK);
     }
 
+    @GetMapping("/test")
+    public ResponseEntity<List<EProcurementOutDTO>> findAllEProcurementsByStatus(@RequestParam(name = "procurementStatus") String procurementStatus) {
+        return new ResponseEntity<>(eProcurementService.findAllEProcurementsByStatus(procurementStatus), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<EProcurementDetailOutDTO> findEProcurementById(@PathVariable Long id) {
-        return new ResponseEntity<>(eProcurementService.findEProcurementById(id), HttpStatus.OK);
+    public ResponseEntity<EProcurementDetailOutDTO> findEProcurementById(@PathVariable Long id
+                        , @RequestParam(name = "isDetailed", required = false) String isDetailed) {
+        return new ResponseEntity<>(eProcurementService.findEProcurementById(id, isDetailed), HttpStatus.OK);
     }
 
 

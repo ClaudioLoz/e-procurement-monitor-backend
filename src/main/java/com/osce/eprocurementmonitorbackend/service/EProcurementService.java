@@ -13,6 +13,7 @@ public interface EProcurementService {
     EProcurementDTO createEProcurement(EProcurement eProcurement, MultipartFile[] files);
 
     List<EProcurementOutDTO> findAllEProcurements();
+    List<EProcurementOutDTO> findAllEProcurementsByStatus(String procurementStatus);
 
-    EProcurementDetailOutDTO findEProcurementById(Long id);
+    EProcurementDetailOutDTO findEProcurementById(Long id, String isDetailed);
 }

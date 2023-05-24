@@ -5,6 +5,7 @@ import com.osce.eprocurementmonitorbackend.api.dto.EProcurementDTO;
 import com.osce.eprocurementmonitorbackend.api.dto.EProcurementDetailOutDTO;
 import com.osce.eprocurementmonitorbackend.api.dto.EProcurementOutDTO;
 import com.osce.eprocurementmonitorbackend.api.dto.FileInfoOutDTO;
+import com.osce.eprocurementmonitorbackend.enums.ProcurementStatus;
 import com.osce.eprocurementmonitorbackend.model.AuthUser;
 import com.osce.eprocurementmonitorbackend.model.EProcurement;
 import com.osce.eprocurementmonitorbackend.model.FileInfo;
@@ -15,6 +16,7 @@ import com.osce.eprocurementmonitorbackend.repository.FileInfoRepository;
 import com.osce.eprocurementmonitorbackend.security.services.Utils;
 import com.osce.eprocurementmonitorbackend.service.EProcurementService;
 import com.osce.eprocurementmonitorbackend.service.FileStorageService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -117,10 +119,33 @@ public class EProcurementServiceImpl implements EProcurementService {
     }
 
     @Override
-    public EProcurementDetailOutDTO findEProcurementById(Long id) {
+    public List<EProcurementOutDTO> findAllEProcurementsByStatus(String procurementStatus) {
+        return eProcurementRepository.findAllByProcurementStatusIs(ProcurementStatus.valueOf(procurementStatus))
+                .stream().map(eProcurement -> {
+                    EProcurementOutDTO eProcurementOutDTO = new EProcurementOutDTO();
+                    eProcurementOutDTO.setId(eProcurement.getId());
+                    eProcurementOutDTO.setContractingEntityName(eProcurement.getContractingEntityName());
+                    eProcurementOutDTO.setContractingEntityRuc(eProcurement.getContractingEntityRuc());
+                    eProcurementOutDTO.setContractorName(eProcurement.getContractorName());
+                    eProcurementOutDTO.setContractorRuc(eProcurement.getContractorRuc());
+                    eProcurementOutDTO.setProcurementObject(eProcurement.getProcurementObject());
+                    eProcurementOutDTO.setAmount(eProcurement.getAmount());
+                    eProcurementOutDTO.setContractStartDate(eProcurement.getContractStartDate());
+                    eProcurementOutDTO.setContractEndDate(eProcurement.getContractEndDate());
+                    eProcurementOutDTO.setDepartment(eProcurement.getDepartment());
+                    AuthUser authUser = authUserRepository.findById(eProcurement.getUser().getId()).orElseThrow();
+                    eProcurementOutDTO.setUsername(authUser.getNin());
+                    return eProcurementOutDTO;
+                }).collect(Collectors.toList());
+    }
+
+    @Override
+    public EProcurementDetailOutDTO findEProcurementById(Long id, String isDetailed) {
         EProcurement foundEProcurement = eProcurementRepository.findById(id).orElseThrow(() -> new IllegalArgumentException());
         EProcurementDetailOutDTO eProcurementDetailOutDTO = new EProcurementDetailOutDTO();
         eProcurementDetailOutDTO.setEProcurement(foundEProcurement);
+        if(StringUtils.isNotBlank(isDetailed)) return eProcurementDetailOutDTO; //default blank
+
         Web3j web3j = null;
         try {
             // Connect to an Ethereum node
