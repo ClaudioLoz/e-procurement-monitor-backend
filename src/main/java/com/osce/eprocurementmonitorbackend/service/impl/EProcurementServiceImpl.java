@@ -14,8 +14,10 @@ import com.osce.eprocurementmonitorbackend.security.services.UserDetailsImpl;
 import com.osce.eprocurementmonitorbackend.repository.EProcurementRepository;
 import com.osce.eprocurementmonitorbackend.repository.FileInfoRepository;
 import com.osce.eprocurementmonitorbackend.security.services.Utils;
+import com.osce.eprocurementmonitorbackend.service.CommentService;
 import com.osce.eprocurementmonitorbackend.service.EProcurementService;
 import com.osce.eprocurementmonitorbackend.service.FileStorageService;
+import com.osce.eprocurementmonitorbackend.service.RatingService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.FunctionReturnDecoder;
-import org.web3j.abi.TypeDecoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
@@ -61,6 +62,13 @@ public class EProcurementServiceImpl implements EProcurementService {
 
     @Autowired
     private AuthUserRepository authUserRepository;
+
+    @Autowired
+    private RatingService ratingService;
+
+    @Autowired
+    private CommentService commentService;
+
     public EProcurementServiceImpl(EProcurementRepository eProcurementRepository) {
         this.eProcurementRepository = eProcurementRepository;
     }
@@ -114,6 +122,9 @@ public class EProcurementServiceImpl implements EProcurementService {
             eProcurementOutDTO.setDepartment(eProcurement.getDepartment());
             AuthUser authUser = authUserRepository.findById(eProcurement.getUser().getId()).orElseThrow();
             eProcurementOutDTO.setUsername(authUser.getNin());
+            eProcurementOutDTO.setTotalRatingAverage(
+                    ratingService.calculateTotalRatingAverageByEProcurementId(eProcurementOutDTO.getId()));
+            eProcurementOutDTO.setTotalCommentCount(commentService.calculateTotalCommentCountByEProcurementId(eProcurementOutDTO.getId()));
             return eProcurementOutDTO;
         }).collect(Collectors.toList());
     }
@@ -144,6 +155,8 @@ public class EProcurementServiceImpl implements EProcurementService {
         EProcurement foundEProcurement = eProcurementRepository.findById(id).orElseThrow(() -> new IllegalArgumentException());
         EProcurementDetailOutDTO eProcurementDetailOutDTO = new EProcurementDetailOutDTO();
         eProcurementDetailOutDTO.setEProcurement(foundEProcurement);
+        eProcurementDetailOutDTO.setTotalRatingAverage(
+                ratingService.calculateTotalRatingAverageByEProcurementId(eProcurementDetailOutDTO.getEProcurement().getId()));
         if(StringUtils.isNotBlank(isDetailed)) return eProcurementDetailOutDTO; //default blank
 
         Web3j web3j = null;

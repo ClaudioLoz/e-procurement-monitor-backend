@@ -11,4 +11,5 @@ public interface CommentService {
 
     List<CommentDTO> findAllCommentsByEProcurementId(Long eProcurementId);
 
+    Integer calculateTotalCommentCountByEProcurementId(Long eProcurementId);
 }

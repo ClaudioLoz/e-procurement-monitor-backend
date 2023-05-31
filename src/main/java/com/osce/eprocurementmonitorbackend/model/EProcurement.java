@@ -23,6 +23,7 @@ public class EProcurement extends Auditable {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private AuthUser user;
+
     @Enumerated
     @Column(nullable = false)
     private ProcurementStatus procurementStatus = ProcurementStatus.FOLLOW_UP;

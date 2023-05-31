@@ -20,4 +20,6 @@ public class EProcurementOutDTO {
     private LocalDate contractEndDate;
     private String department;
     private String username;
+    private Double totalRatingAverage;
+    private Integer totalCommentCount;
 }

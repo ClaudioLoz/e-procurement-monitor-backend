@@ -33,5 +33,4 @@ public class CommentController {
         return new ResponseEntity<>(commentService.findAllCommentsByEProcurementId(eProcurementId), HttpStatus.OK);
     }
 
-
 }

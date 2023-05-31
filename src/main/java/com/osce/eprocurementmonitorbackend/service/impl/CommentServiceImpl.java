@@ -75,4 +75,10 @@ public class CommentServiceImpl implements CommentService {
             return commentDTO;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public Integer calculateTotalCommentCountByEProcurementId(Long eProcurementId) {
+        return commentRepository.findAllByEprocurement_Id(eProcurementId).size();
+    }
+
 }

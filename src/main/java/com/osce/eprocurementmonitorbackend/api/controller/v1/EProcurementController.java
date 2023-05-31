@@ -21,7 +21,6 @@ import java.util.List;
 @RequestMapping(value = "/api/v1/eprocurements")
 public class EProcurementController {
 
-
     private final EProcurementService eProcurementService;
 
     private final FileStorageService fileStorageService;
@@ -53,13 +52,7 @@ public class EProcurementController {
         return new ResponseEntity<>(eProcurementService.findEProcurementById(id, isDetailed), HttpStatus.OK);
     }
 
-
-//    @GetMapping("/files")
-//    public ResponseEntity<List<FileInfoOutDTO>> findAllEProcurementFiles() {
-//        return ResponseEntity.status(HttpStatus.OK).body(eProcurementService.findAllFiles());
-//    }
-
-    @GetMapping("/files/{filename:.+}")
+    @GetMapping("/files/{filename:.+}") //TODO: LET DOWNLOAD with originalFileName
     public ResponseEntity<Resource> findFile(@PathVariable String filename) {
         Resource file = fileStorageService.load(filename);
         return ResponseEntity.ok()

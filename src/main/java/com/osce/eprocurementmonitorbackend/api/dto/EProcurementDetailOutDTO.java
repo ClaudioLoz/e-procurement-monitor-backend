@@ -11,4 +11,5 @@ import java.util.List;
 public class EProcurementDetailOutDTO {
     private EProcurement eProcurement;
     private List<FileInfoOutDTO> fileInfoOutDTOList;
+    private Double totalRatingAverage;
 }
