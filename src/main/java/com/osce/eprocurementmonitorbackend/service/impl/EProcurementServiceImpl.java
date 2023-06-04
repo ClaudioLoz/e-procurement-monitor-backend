@@ -40,10 +40,7 @@ import org.web3j.protocol.http.HttpService;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 @Transactional
 @Service
@@ -126,7 +123,9 @@ public class EProcurementServiceImpl implements EProcurementService {
                     ratingService.calculateTotalRatingAverageByEProcurementId(eProcurementOutDTO.getId()));
             eProcurementOutDTO.setTotalCommentCount(commentService.calculateTotalCommentCountByEProcurementId(eProcurementOutDTO.getId()));
             return eProcurementOutDTO;
-        }).collect(Collectors.toList());
+        })
+                .sorted(Comparator.comparingDouble(EProcurementOutDTO::getTotalRatingAverage))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -146,8 +145,18 @@ public class EProcurementServiceImpl implements EProcurementService {
                     eProcurementOutDTO.setDepartment(eProcurement.getDepartment());
                     AuthUser authUser = authUserRepository.findById(eProcurement.getUser().getId()).orElseThrow();
                     eProcurementOutDTO.setUsername(authUser.getNin());
+                    if (procurementStatus.equals(ProcurementStatus.COMPLETED.toString())) {
+                        eProcurementOutDTO.setTotalRatingAverage(
+                                ratingService.calculateTotalRatingAverageByEProcurementId(eProcurementOutDTO.getId()));
+                        eProcurementOutDTO.setTotalCommentCount(commentService.calculateTotalCommentCountByEProcurementId(eProcurementOutDTO.getId()));
+                    }
                     return eProcurementOutDTO;
-                }).collect(Collectors.toList());
+                })
+                    .sorted(Comparator.comparingDouble(dto -> {
+                        Double totalRatingAverage = dto.getTotalRatingAverage();
+                        return totalRatingAverage != null ? totalRatingAverage : Double.MAX_VALUE;
+                    }))
+                    .collect(Collectors.toList());
     }
 
     @Override

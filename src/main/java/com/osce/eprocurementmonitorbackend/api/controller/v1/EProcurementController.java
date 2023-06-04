@@ -41,7 +41,7 @@ public class EProcurementController {
         return new ResponseEntity<>(eProcurementService.findAllEProcurements(), HttpStatus.OK);
     }
 
-    @GetMapping("/test")
+    @GetMapping(params = "procurementStatus")
     public ResponseEntity<List<EProcurementOutDTO>> findAllEProcurementsByStatus(@RequestParam(name = "procurementStatus") String procurementStatus) {
         return new ResponseEntity<>(eProcurementService.findAllEProcurementsByStatus(procurementStatus), HttpStatus.OK);
     }
